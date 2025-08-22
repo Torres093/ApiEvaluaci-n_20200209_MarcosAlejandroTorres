@@ -30,6 +30,24 @@ public class LibroService {
         }
     }
 
+    public libroDTO update(Long id, @Valid libroDTO json){
+        LibroEntity libroExistente = repo.findById(id).orElseThrow(()-> new IllegalArgumentException("Producto no encontrado"));
+        libroExistente.setTitulo(json.getTitulo());
+        libroExistente.setGenero(json.getGenero());
+        libroExistente.setAño_publicacion(json.getAño_publicacion());
+        LibroEntity libroActualizado = repo.save(libroExistente);
+        return convertirALibroDTO(libroActualizado);
+    }
+
+    public boolean delete(Long id){
+        LibroEntity ex = repo.findById(id).orElse(null);
+        if (ex != null){
+            repo.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 
     public List<libroDTO> getAllLibros(){
         List<LibroEntity> libros = repo.findAll();
@@ -46,7 +64,7 @@ public class LibroService {
         entity.setGenero(json.getGenero());
         entity.setAño_publicacion(json.getAño_publicacion());
         entity.setAutor_id(json.getAutor_id());
-
+        return entity;
     }
 
     private libroDTO convertirALibroDTO(LibroEntity libros) {
